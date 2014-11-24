@@ -37,12 +37,14 @@ namespace TimeAnalyzerino
       public Dictionary<int, TimeSheetRow> allRows { get; protected set; }
       protected int lastDataRow {get; set;}
 
-      public IEnumerable<IGrouping<int, KeyValuePair<int, TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
+      public Dictionary<int, List<KeyValuePair<int,TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
       {
          return allRows
             .Where(row => row.Value.WorkDate >= start && row.Value.WorkDate < end)
             .GroupBy(row => row.Value.JobNumberIntegerPart)
             .OrderBy(grp => grp.Key)
+            .ToDictionary(i => i.Key, i => i.ToList());
+            //.Select(grp =>  grp)
             ;
       }
 

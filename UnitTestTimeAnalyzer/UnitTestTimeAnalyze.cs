@@ -76,13 +76,25 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
-      public void TimeAnalyzer_TimesheetWorksheet_GetJobsByDateRange_ReturnsXRows()
+      public void TimeAnalyzer_TimesheetWorksheet_GetJobsByDateRange_Returns4Jobs()
       {
          TimeAnalyzerSetup();
          var v = analyst.GetJobsByDateRange(
             new DateTime(2014, 8, 6),
             new DateTime(2014, 8, 18)
             );
+         Assert.AreEqual(expected: 4, actual: v.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_TimesheetWorksheet_GetJobsByDateRange_Returns9RowsForJob1100()
+      {
+         TimeAnalyzerSetup();
+         var v = analyst.GetJobsByDateRange(
+            new DateTime(2014, 8, 6),
+            new DateTime(2014, 8, 18)
+            );
+         Assert.AreEqual(expected: 9, actual: v[1100].Count);
       }
 
    }
