@@ -35,6 +35,7 @@ namespace TimeAnalyzerino
          Total = total;
          WeekTotal = weekTotal;
          JobNumber = jobNumber;
+         getPartsFromJobNumber();
          Task = task;
          Description = description;
          NotChargeable = notChargeable;
@@ -54,12 +55,13 @@ namespace TimeAnalyzerino
          Total = convertCellToTimeSpan(ws.Cells[row, 5]);
          WeekTotal = convertCellToTimeSpan(ws.Cells[row, 6]);
          JobNumber = convertCellToString(ws.Cells[row, 7]);
-         Task = convertCellToString(ws.Cells[row, 7]);
-         Description = convertCellToString(ws.Cells[row, 7]);
-         NotChargeable = convertCellToString(ws.Cells[row, 7]);
-         Comments = convertCellToString(ws.Cells[row, 7]);
-         Invoicable = convertCellToString(ws.Cells[row, 7]);
-         Invoice = convertCellToString(ws.Cells[row, 7]);
+         getPartsFromJobNumber();
+         Task = convertCellToString(ws.Cells[row, 8]);
+         Description = convertCellToString(ws.Cells[row, 9]);
+         NotChargeable = convertCellToString(ws.Cells[row, 10]);
+         Comments = convertCellToString(ws.Cells[row, 11]);
+         Invoicable = convertCellToString(ws.Cells[row, 12]);
+         Invoice = convertCellToString(ws.Cells[row, 13]);
          RowInSheet = row;
          MaxRowInSheet = Math.Max(RowInSheet, maxRowInSheet_);
       }
@@ -71,6 +73,9 @@ namespace TimeAnalyzerino
       public TimeSpan Total {get; internal set;}
       public TimeSpan WeekTotal {get; internal set;}
       public String JobNumber {get; internal set;}
+      private int jobNumberIntegerPart_;
+      public int JobNumberIntegerPart { get { return jobNumberIntegerPart_; } }
+      public String JobNumberDecimalPart { get; internal set; }
       public String Task {get; internal set;}
       public String Description {get; internal set;}
       public String NotChargeable {get; internal set;}
@@ -89,11 +94,7 @@ namespace TimeAnalyzerino
          DateTime returnValue;
          var cellContents = cell.Value.ToString();
          bool parsed;
-         // DateTime.TryParse won't work
-         //parsed = DateTime.TryParseExact(cellContents,
-         //   "M/d/yyyy", CultureInfo.InvariantCulture,
-         //   DateTimeStyles.None,
-         //   out returnValue);
+         // DateTime.TryParse won't work, so I made my own
          parsed = parseDateTime(cellContents, out returnValue);
          if(false == parsed)
          {
@@ -149,6 +150,15 @@ namespace TimeAnalyzerino
          if (null == cell) return String.Empty;
          if (String.IsNullOrEmpty(cell.Text)) return String.Empty;
          return cell.Text.ToString();
+      }
+
+      private void getPartsFromJobNumber()
+      {
+         if (true == String.IsNullOrEmpty(this.JobNumber)) return;
+         var jobnum = this.JobNumber.Split('.');
+         Int32.TryParse(this.JobNumber.Split('.').FirstOrDefault(), out jobNumberIntegerPart_);
+         if (jobnum.Length > 1)
+            this.JobNumberDecimalPart = jobnum[1];
       }
 
       private static int maxRowInSheet_ = 0;

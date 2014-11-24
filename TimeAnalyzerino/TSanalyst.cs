@@ -25,7 +25,7 @@ namespace TimeAnalyzerino
          allRows = Enumerable.Range(2, XLTimeSheet.Dimension.End.Row)
             .Where(row => true == TimeSheetRow.HasData(XLTimeSheet, row))
             .Select(row => new TimeSheetRow(XLTimeSheet, row))
-            .ToList()
+            .ToDictionary(row => row.RowInSheet, row => row)
             ;
       }
 
@@ -34,8 +34,17 @@ namespace TimeAnalyzerino
       private ExcelPackage xlPackage {get; set;}
       private ExcelWorkbook xlWorkBook { get; set; }
       public ExcelWorksheet XLTimeSheet { get; protected set; }
-      public List<TimeSheetRow> allRows { get; protected set; }
+      public Dictionary<int, TimeSheetRow> allRows { get; protected set; }
       protected int lastDataRow {get; set;}
+
+      public IEnumerable<IGrouping<int, KeyValuePair<int, TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
+      {
+         return allRows
+            .Where(row => row.Value.WorkDate >= start && row.Value.WorkDate < end)
+            .GroupBy(row => row.Value.JobNumberIntegerPart)
+            .OrderBy(grp => grp.Key)
+            ;
+      }
 
    }
 }
