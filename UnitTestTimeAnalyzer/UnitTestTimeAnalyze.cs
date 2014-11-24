@@ -97,5 +97,15 @@ namespace UnitTestTimeAnalyzer
          Assert.AreEqual(expected: 9, actual: v[1100].Count);
       }
 
+      [TestMethod]
+      public void TimeAnalyzer_JobNumberKeyWorksheet_Row7_Has_Description_RM21()
+      {
+         TimeAnalyzerSetup();
+         String description = analyst.allJobNumberKeyRows[7].Description;
+         Assert.AreEqual(
+            expected: "RM21",
+            actual: description);
+      }
+
    }
 }

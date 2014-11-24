@@ -7,34 +7,16 @@ using OfficeOpenXml;
 
 namespace TimeAnalyzerino
 {
-   public class JobNumberKeyRow : GeneralWorksheetRow
+   public class JobNumberKeyRow : JobNumberKeyBaseRow
    {
-
       public JobNumberKeyRow(ExcelWorksheet ws, int row)
-         : base(ws, row)
+         : base(ws, row, 1)
       {
-         JobNumber = convertCellToString(ws.Cells[row, 7]);
-         getPartsFromJobNumber();
-         Task = convertCellToString(ws.Cells[row, 8]);
-         Description = convertCellToString(ws.Cells[row, 9]);
+         Invoiceable = convertCellToString(ws.Cells[row, 4]);
+         Comments = convertCellToString(ws.Cells[row, 5]);
       }
-
-      public String JobNumber { get; internal set; }
-      protected int jobNumberIntegerPart_;
-      public int JobNumberIntegerPart { get { return jobNumberIntegerPart_; } }
-      public String JobNumberDecimalPart { get; internal set; }
-      public String Task { get; internal set; }
-      public String Description { get; internal set; }
-
-      protected void getPartsFromJobNumber()
-      {
-         if (true == String.IsNullOrEmpty(this.JobNumber)) return;
-         var jobnum = this.JobNumber.Split('.');
-         Int32.TryParse(this.JobNumber.Split('.').FirstOrDefault(), out jobNumberIntegerPart_);
-         if (jobnum.Length > 1)
-            this.JobNumberDecimalPart = jobnum[1];
-      }
-
+      public String Invoiceable { get; internal set; }
+      public String Comments { get; internal set; }
 
    }
 }

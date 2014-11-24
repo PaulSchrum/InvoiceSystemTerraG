@@ -9,11 +9,11 @@ using OfficeOpenXml;
 
 namespace TimeAnalyzerino
 {
-    public class TimeSheetRow : JobNumberKeyRow
+    public class TimeSheetRow : JobNumberKeyBaseRow
    {
 
       public TimeSheetRow(ExcelWorksheet ws, int row)
-         : base(ws, row)
+         : base(ws, row, 7)
       {
          WorkDate = convertCellToDateTime(ws.Cells[row, 1]);
          WorkBegin = convertCellToDateTime(ws.Cells[row, 2]);

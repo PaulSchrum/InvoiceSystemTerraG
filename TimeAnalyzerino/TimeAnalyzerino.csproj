@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeneralWorksheetRow.cs" />
+    <Compile Include="JobNumberKeyBaseRow.cs" />
     <Compile Include="JobNumberKeyRow.cs" />
     <Compile Include="TimeSheetRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -27,6 +27,13 @@ namespace TimeAnalyzerino
             .Select(row => new TimeSheetRow(XLTimeSheet, row))
             .ToDictionary(row => row.RowInSheet, row => row)
             ;
+
+         XLJobNumberKeySheet = xlWorkBook.Worksheets["JobNumberKey"];
+         allJobNumberKeyRows = Enumerable.Range(2, XLJobNumberKeySheet.Dimension.End.Row)
+            .Where(row => true == JobNumberKeyRow.HasData(XLJobNumberKeySheet, row))
+            .Select(row => new JobNumberKeyRow(XLJobNumberKeySheet, row))
+            .ToDictionary(row => row.RowInSheet, row => row)
+            ;
       }
 
       private String xlPathAndName { get; set; }
@@ -35,7 +42,9 @@ namespace TimeAnalyzerino
       private ExcelWorkbook xlWorkBook { get; set; }
       public ExcelWorksheet XLTimeSheet { get; protected set; }
       public Dictionary<int, TimeSheetRow> allTimesheetRows { get; protected set; }
-      protected int lastDataRow {get; set;}
+      
+      public ExcelWorksheet XLJobNumberKeySheet { get; protected set; }
+      public Dictionary<int, JobNumberKeyRow> allJobNumberKeyRows { get; protected set; }
 
       public Dictionary<int, List<KeyValuePair<int,TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
       {
