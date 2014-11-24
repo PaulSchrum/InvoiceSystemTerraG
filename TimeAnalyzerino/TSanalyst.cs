@@ -34,6 +34,13 @@ namespace TimeAnalyzerino
             .Select(row => new JobNumberKeyRow(XLJobNumberKeySheet, row))
             .ToDictionary(row => row.RowInSheet, row => row)
             ;
+
+         XLInvoicing = xlWorkBook.Worksheets["Invoicing"];
+         allInvoicingRows = Enumerable.Range(2, XLInvoicing.Dimension.End.Row)
+            .Where(row => true == InvoicingRow.HasData(XLInvoicing, row))
+            .Select(row => new InvoicingRow(XLInvoicing, row))
+            .ToDictionary(row => row.RowInSheet, row => row)
+            ;
       }
 
       private String xlPathAndName { get; set; }
@@ -45,6 +52,9 @@ namespace TimeAnalyzerino
       
       public ExcelWorksheet XLJobNumberKeySheet { get; protected set; }
       public Dictionary<int, JobNumberKeyRow> allJobNumberKeyRows { get; protected set; }
+
+      public ExcelWorksheet XLInvoicing { get; protected set; }
+      public Dictionary<int, InvoicingRow> allInvoicingRows { get; protected set; }
 
       public Dictionary<int, List<KeyValuePair<int,TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
       {
@@ -90,6 +100,22 @@ namespace TimeAnalyzerino
                , billableJobRow => billableJobRow.JobNumber
                , (tsh, bilJ) => tsh
             );
+      }
+
+      public DateTime GetDateOfLastInvoiceSent(int jobNum)
+      {
+         var lastInvoiceRow =
+            this.allInvoicingRows
+            .Where(row => row.Value.JobNumber == jobNum)
+            .OrderBy(row => row.Value.DateSent)
+            .Take(1)
+            .Select(row => row.Key)
+            .FirstOrDefault()
+            ;
+
+         if (lastInvoiceRow == 0) return default(DateTime);
+
+         return this.allInvoicingRows[lastInvoiceRow].DateSent;
       }
    }
 }

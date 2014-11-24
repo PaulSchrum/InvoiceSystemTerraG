@@ -148,5 +148,37 @@ namespace UnitTestTimeAnalyzer
             actual: invoiceables.Count);
       }
 
+      [TestMethod]
+      public void TimeAnalyzer_InvoicingWorksheet_Has3Rows()
+      {
+         TimeAnalyzerSetup();
+         var previousInvoices = analyst.allInvoicingRows.ToList();
+         Assert.AreEqual(
+            expected: 3,
+            actual: previousInvoices.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_InvoicingWorksheet_Job1200_MostRecentInvoiceWas25August2014()
+      {
+         TimeAnalyzerSetup();
+         var lastInvoiceDate = analyst.GetDateOfLastInvoiceSent(1200);
+         DateTime Expected = new DateTime(2014, 8, 25);
+         Assert.AreEqual(
+            expected: Expected,
+            actual: lastInvoiceDate);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_InvoicingWorksheet_NonExistantJobNumber_ReturnsWhat()
+      {
+         TimeAnalyzerSetup();
+         var lastInvoiceDate = analyst.GetDateOfLastInvoiceSent(73);
+         DateTime Expected = default(DateTime);
+         Assert.AreEqual(
+            expected: Expected,
+            actual: lastInvoiceDate);
+      }
+
    }
 }

@@ -80,9 +80,30 @@ namespace TimeAnalyzerino
 
       protected String convertCellToString(ExcelRange cell)
       {
+         var v = cell.Text;
          if (null == cell) return String.Empty;
          if (String.IsNullOrEmpty(cell.Text)) return String.Empty;
          return cell.Text.ToString();
+      }
+
+      protected int convertCellToInt(ExcelRange cell)
+      {
+         if (null == cell ||
+            null == cell.Value ||
+            !(cell.Value is Double))
+            return 0;
+
+         return Convert.ToInt32((cell.Value as Double?).Value);
+      }
+
+      protected Double convertCellToDouble(ExcelRange cell)
+      {
+         if (null == cell ||
+            null == cell.Value ||
+            !(cell.Value is Double))
+            return 0.0;
+
+         return (cell.Value as Double?).Value;
       }
 
       protected static int maxRowInSheet_ = 0;
