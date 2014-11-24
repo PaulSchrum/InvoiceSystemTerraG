@@ -49,7 +49,7 @@ namespace UnitTestTimeAnalyzer
       public void TimeAnalyzer_TimesheetWorksheet_Row1144Task_Is_SchrumAssignment02()
       {
          TimeAnalyzerSetup();
-         var softwareTaskName = analyst.allRows[1144].Task;
+         var softwareTaskName = analyst.allTimesheetRows[1144].Task;
          Assert.AreEqual(
             expected: "SchrumAssignment02",
             actual: softwareTaskName);
@@ -59,7 +59,7 @@ namespace UnitTestTimeAnalyzer
       public void TimeAnalyzer_TimesheetWorksheet_Row1144JobInteger_Is_1100()
       {
          TimeAnalyzerSetup();
-         int jobNumberIP = analyst.allRows[1144].JobNumberIntegerPart;
+         int jobNumberIP = analyst.allTimesheetRows[1144].JobNumberIntegerPart;
          Assert.AreEqual(
             expected: 1100,
             actual: jobNumberIP);
@@ -69,7 +69,7 @@ namespace UnitTestTimeAnalyzer
       public void TimeAnalyzer_TimesheetWorksheet_Row1144JobDecimal_Is_1()
       {
          TimeAnalyzerSetup();
-         String jobNumberDec = analyst.allRows[1144].JobNumberDecimalPart;
+         String jobNumberDec = analyst.allTimesheetRows[1144].JobNumberDecimalPart;
          Assert.AreEqual(
             expected: "1",
             actual: jobNumberDec);
