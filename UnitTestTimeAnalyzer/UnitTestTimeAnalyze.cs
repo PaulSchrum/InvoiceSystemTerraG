@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using TimeAnalyzerino;
 
 namespace UnitTestTimeAnalyzer
@@ -98,6 +99,36 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
+      public void TimeAnalyzer_TimesheetWorksheet_GetAllTimesheetRowsByJobOverDateRange_Gets6Rows()
+      {
+         TimeAnalyzerSetup();
+         var v = analyst.GetTimesheetRowsByJobOverDateRange(
+            1100,
+            new DateTime(2014, 7, 24),
+            new DateTime(2014, 7, 27)
+            )
+            .ToList()
+            ;
+
+         Assert.AreEqual(expected: 6, actual: v.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_TimesheetWorksheet_GetTimesheetRowsByInvoiceableJobOverDateRange_Gets3Rows()
+      {
+         TimeAnalyzerSetup();
+         var v = analyst.GetTimesheetRowsByInvoiceableJobOverDateRange(
+            1100,
+            new DateTime(2014, 7, 24),
+            new DateTime(2014, 7, 28)
+            )
+            .ToList()
+            ;
+
+         Assert.AreEqual(expected: 3, actual: v.Count);
+      }
+
+      [TestMethod]
       public void TimeAnalyzer_JobNumberKeyWorksheet_Row7_Has_Description_RM21()
       {
          TimeAnalyzerSetup();
@@ -105,6 +136,16 @@ namespace UnitTestTimeAnalyzer
          Assert.AreEqual(
             expected: "RM21",
             actual: description);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_JobNumberKeyWorksheet_Job1100_Has8InvoiceableRows()
+      {
+         TimeAnalyzerSetup();
+         var invoiceables = analyst.GetInvoiceableJobsByJobNumber(1100).ToList();
+         Assert.AreEqual(
+            expected: 8,
+            actual: invoiceables.Count);
       }
 
    }

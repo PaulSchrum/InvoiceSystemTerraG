@@ -56,5 +56,40 @@ namespace TimeAnalyzerino
             ;
       }
 
+
+      public IEnumerable<TimeSheetRow> GetTimesheetRowsByJobOverDateRange(int jobInt, DateTime start, DateTime end)
+      {
+         return
+            allTimesheetRows
+            .Where(row => row.Value.WorkDate >= start && row.Value.WorkDate < end)
+            .Where(row => row.Value.JobNumberIntegerPart == jobInt)
+            .Select(row => row.Value)
+            ;
+      }
+
+      public IEnumerable<JobNumberKeyRow> GetInvoiceableJobsByJobNumber(int jobNumber)
+      {
+         return
+            allJobNumberKeyRows
+            .Where(row => row.Value.JobNumberIntegerPart == jobNumber)
+            .Where(row => false == String.IsNullOrEmpty(row.Value.Invoiceable))
+            .Select(row => row.Value)
+            ;
+      }
+
+      public IEnumerable<TimeSheetRow> GetTimesheetRowsByInvoiceableJobOverDateRange
+         (int jobInt, DateTime start, DateTime end)
+      {
+         var billableJobs =
+            GetInvoiceableJobsByJobNumber(jobInt);
+
+         return
+            GetTimesheetRowsByJobOverDateRange(jobInt, start, end)
+            .Join(billableJobs
+               , timeSheetRow => timeSheetRow.JobNumber
+               , billableJobRow => billableJobRow.JobNumber
+               , (tsh, bilJ) => tsh
+            );
+      }
    }
 }
