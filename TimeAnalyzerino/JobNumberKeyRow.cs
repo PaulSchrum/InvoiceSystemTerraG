@@ -18,5 +18,9 @@ namespace TimeAnalyzerino
       public String Invoiceable { get; internal set; }
       public String Comments { get; internal set; }
 
+      internal void testing_changeInvoicableValueTo(String newVal)
+      {
+         this.Invoiceable = newVal;
+      }
    }
 }

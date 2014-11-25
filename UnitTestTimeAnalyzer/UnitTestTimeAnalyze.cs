@@ -17,6 +17,13 @@ namespace UnitTestTimeAnalyzer
       {
          if (null != analyst) return;
          analyst = new TSanalyst(XLfilename);
+
+         var rm21Dev = analyst.allJobNumberKeyRows
+            .Where(row => row.Value.JobNumber.Equals("21.01"))
+            .FirstOrDefault().Value;
+         if (null != rm21Dev)
+            rm21Dev.testing_changeInvoicableValueTo("y");
+
       }
 
       [TestCleanup]
@@ -170,7 +177,7 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
-      public void TimeAnalyzer_InvoicingWorksheet_NonExistantJobNumber_ReturnsWhat()
+      public void TimeAnalyzer_InvoicingWorksheet_NonExistantJobNumber_ReturnsDefault()
       {
          TimeAnalyzerSetup();
          var lastInvoiceDate = analyst.GetDateOfLastInvoiceSent(73);
@@ -180,5 +187,125 @@ namespace UnitTestTimeAnalyzer
             actual: lastInvoiceDate);
       }
 
-   }
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoicableProjectNumberIntegers_Returns3()
+      {
+         TimeAnalyzerSetup();
+         var numberOfInvoicableProjects =
+            analyst.GetAllInvoicableProjectNumbersIntegerParts()
+            .ToList();
+         Assert.AreEqual(
+            expected: 3,
+            actual: numberOfInvoicableProjects.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoicableProjectNumbers_Returns12()
+      {
+         TimeAnalyzerSetup();
+         var numberOfInvoicableProjects =
+            analyst.GetAllInvoicableProjectNumbers(0)
+            .ToList().Count;
+         Assert.AreEqual(
+            expected: 12,
+            actual: numberOfInvoicableProjects);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoicableProjectNumberFor1200_Returns3()
+      {
+         TimeAnalyzerSetup();
+         var numberOfInvoicableProjects =
+            analyst.GetAllInvoicableProjectNumbers(1200)
+            .ToList().Count;
+         Assert.AreEqual(
+            expected: 3,
+            actual: numberOfInvoicableProjects);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetLastActiveDateForAllInvoicableJobNumbers_Has3Rows()
+      {
+         TimeAnalyzerSetup();
+         var rowsOfLastDateWorked =
+            analyst.GetLastWorkedRowForEachBillableProjectNumber()
+            .ToList();
+         Assert.AreEqual(
+            expected: 3,
+            actual: rowsOfLastDateWorked.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetLastActiveInvoicableDateForJobNumber1200_IsAugust25_2014()
+      {
+         TimeAnalyzerSetup();
+         var numberOfInvoicableProjects =
+            analyst.GetLastWorkedRowForEachBillableProjectNumber()
+            .Where(row => row.JobNumberIntegerPart == 1200)
+            .Select(row => row)
+            .FirstOrDefault()
+            ;
+
+         var Expected = new DateTime(2014, 8, 25);
+         Assert.AreEqual(expected: 1200, actual: numberOfInvoicableProjects.JobNumberIntegerPart);
+         Assert.AreEqual(
+            expected: Expected,
+            actual: numberOfInvoicableProjects.WorkDate);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoicableProjectsNeverInvoiced_Returns1()
+      {
+         TimeAnalyzerSetup();
+         var neverInvoicedProjects =
+            analyst.GetAllProjectNumbersWhichHaveNeverBeenInvoiced()
+            .ToList();
+         Assert.AreEqual(
+            expected: 1,
+            actual: neverInvoicedProjects.Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetMostRecentInvoiceForEachProjectEverInvoiced_ReturnsCorrect()
+      {
+         TimeAnalyzerSetup();
+         var mostRecentInvoiceForEveryProjectEverInvoiced =
+            analyst.GetMostRecentInvoiceForAllProjectsEverInvoiced()
+            .ToList();
+
+         var value = mostRecentInvoiceForEveryProjectEverInvoiced;
+         bool success =
+            (  value.Count == 2)
+            && value[0].JobNumber == 1100
+            && value[0].DateSent == new DateTime(2014,11,14)
+            && value[1].JobNumber == 1200
+            && value[1].DateSent == new DateTime(2014, 8, 25)
+            ;
+
+         Assert.IsTrue(success);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoicableProjectsThatCouldBeInvoiced_Returns2()
+      {
+         TimeAnalyzerSetup();
+         var couldBeInvoiced =
+            analyst.GetAllProjectNumbersWhichMayNowBeInvoiced()
+            .ToList();
+         Assert.AreEqual(
+            expected: 2,
+            actual: couldBeInvoiced.Count);
+      }
+
+
+
+      // GetAllProjectNumbersWhichHaveNeverBeenInvoiced
+
+      //[TestMethod]  needed test, but not ready yet
+      //public void TimeAnalyzer_GetAllProjectNumbersWhichCouldBeInvoiced_ReturnsWhat()
+      //{
+      //   GetAllProjectNumbersWhichCouldBeInvoiced
+      //}
+
+   }  //
 }

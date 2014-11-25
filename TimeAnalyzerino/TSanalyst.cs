@@ -17,7 +17,14 @@ namespace TimeAnalyzerino
          xlPathAndName = pathFileName;
          fileInfo = new FileInfo(xlPathAndName);
 
-         xlPackage = new ExcelPackage(fileInfo);
+         try
+         {
+            xlPackage = new ExcelPackage(fileInfo);
+         }
+         catch(IOException ex)
+         {
+            throw new Exception("That excel file is probably open.  Close it or share it and try again.",ex);
+         }
          xlWorkBook = xlPackage.Workbook;
 
          XLTimeSheet = xlWorkBook.Worksheets["Timesheet"];
@@ -41,6 +48,12 @@ namespace TimeAnalyzerino
             .Select(row => new InvoicingRow(XLInvoicing, row))
             .ToDictionary(row => row.RowInSheet, row => row)
             ;
+
+         allJobNumbersEverInvoiced =
+            allInvoicingRows
+            .Select(row => row.Value.JobNumber)
+            .Distinct()
+            ;
       }
 
       private String xlPathAndName { get; set; }
@@ -55,6 +68,7 @@ namespace TimeAnalyzerino
 
       public ExcelWorksheet XLInvoicing { get; protected set; }
       public Dictionary<int, InvoicingRow> allInvoicingRows { get; protected set; }
+      protected IEnumerable<int> allJobNumbersEverInvoiced { get; set; }
 
       public Dictionary<int, List<KeyValuePair<int,TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
       {
@@ -116,6 +130,104 @@ namespace TimeAnalyzerino
          if (lastInvoiceRow == 0) return default(DateTime);
 
          return this.allInvoicingRows[lastInvoiceRow].DateSent;
+      }
+
+      public IEnumerable<int> GetAllInvoicableProjectNumbersIntegerParts()
+      {
+         return
+            this.allJobNumberKeyRows
+            .Where(row => !(String.IsNullOrEmpty(row.Value.Invoiceable)))
+            .Select(row => row.Value.JobNumberIntegerPart)
+            .Distinct()
+            ;
+      }
+
+      public IEnumerable<String> GetAllInvoicableProjectNumbers(int projectNumber)
+      {
+         return
+            this.allJobNumberKeyRows
+            .Where(row =>
+               {
+                  if (projectNumber == 0)
+                     return true;
+                  else
+                     return row.Value.JobNumberIntegerPart == projectNumber;
+               }
+               )
+            .Where(row => !(String.IsNullOrEmpty(row.Value.Invoiceable)))
+            .Select(row => row.Value.JobNumber)
+            ;
+      }
+
+      public IEnumerable<IGrouping<int, TimeSheetRow>>
+         GetAllBillableTimeSheetRowsByProject()
+      {
+         var invoicableProjNums =
+            GetAllInvoicableProjectNumbers(0);
+
+         return
+            this.allTimesheetRows
+            .Join(
+               invoicableProjNums
+               , timesheetRow => timesheetRow.Value.JobNumber
+               , invoicableRow => invoicableRow
+               , (tsh, inv) => tsh.Value
+            )
+            .GroupBy(row => row.JobNumberIntegerPart)
+            ;
+      }
+
+      public IEnumerable<TimeSheetRow> GetLastWorkedRowForEachBillableProjectNumber()
+      {
+         return
+            GetAllBillableTimeSheetRowsByProject()
+            .SelectMany(group => group
+               .OrderByDescending(row => row.WorkDate)
+               .Take(1)
+               .Select(row => row))
+            ;
+      }
+
+      public IEnumerable<int> GetAllProjectNumbersWhichHaveNeverBeenInvoiced()
+      {
+         var neverInvoiced =
+            GetLastWorkedRowForEachBillableProjectNumber()
+            .Where(
+               row => allJobNumbersEverInvoiced
+                  .All(invJob => invJob != row.JobNumberIntegerPart))
+            .Select(row => row.JobNumberIntegerPart)
+            ;
+         return neverInvoiced;
+      }
+
+      public IEnumerable<InvoicingRow> GetMostRecentInvoiceForAllProjectsEverInvoiced()
+      {
+         var v = this.allInvoicingRows
+            .OrderByDescending(row => row.Value.EndDate)
+            .GroupBy(row => row.Value.JobNumber)
+            .Select(grp => grp.AsEnumerable()
+               .Take(1)
+               )
+            .Select(kvPair => kvPair.FirstOrDefault().Value)
+            //.ToList()
+            ;
+
+         return v;
+      }
+
+      internal IEnumerable<int> GetAllProjectNumbersWhichMayNowBeInvoiced()
+      {
+         var monad =
+            GetLastWorkedRowForEachBillableProjectNumber()
+            .Where(row => 
+               GetMostRecentInvoiceForAllProjectsEverInvoiced()
+               .All(invRow => row.WorkDate > invRow.EndDate)
+               )
+            .Select(row => row.JobNumberIntegerPart)
+            .Union(GetAllProjectNumbersWhichHaveNeverBeenInvoiced())
+            //.ToList()
+            ;
+         return monad;
       }
    }
 }

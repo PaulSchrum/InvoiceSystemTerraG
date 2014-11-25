@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using OfficeOpenXml;
 
+[assembly: InternalsVisibleTo("UnitTestTimeAnalyzer")]
 namespace TimeAnalyzerino
 {
    public class GeneralWorksheetRow
@@ -89,11 +91,14 @@ namespace TimeAnalyzerino
       protected int convertCellToInt(ExcelRange cell)
       {
          if (null == cell ||
-            null == cell.Value ||
-            !(cell.Value is Double))
+            null == cell.Value )
             return 0;
+         if(cell.Value is Double)
+            return Convert.ToInt32((cell.Value as Double?).Value);
 
-         return Convert.ToInt32((cell.Value as Double?).Value);
+         int result = -1;
+         bool parseStatus = Int32.TryParse(cell.Value as String, out result);
+         return result;
       }
 
       protected Double convertCellToDouble(ExcelRange cell)
@@ -105,6 +110,9 @@ namespace TimeAnalyzerino
 
          return (cell.Value as Double?).Value;
       }
+
+      internal bool CanAccessInternal()
+      { return true; }
 
       protected static int maxRowInSheet_ = 0;
       public static int MaxRowInSheet
