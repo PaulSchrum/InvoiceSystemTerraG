@@ -12,6 +12,9 @@ namespace Invoicing
    {
       private InvoiceSummary() { }
 
+      public List<InvoiceDay> InvoiceDays { get; protected set; }
+      public InvoicingRow InvoicingRow { get; protected set; }
+
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
       {
          var allInvoiceableRows =
@@ -42,9 +45,6 @@ namespace Invoicing
 
          return returnValue;
       }
-
-      public List<InvoiceDay> InvoiceDays { get; protected set; }
-      public InvoicingRow InvoicingRow { get; protected set; }
 
    }
 }

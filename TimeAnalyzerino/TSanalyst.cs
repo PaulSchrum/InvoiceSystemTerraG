@@ -60,10 +60,10 @@ namespace TimeAnalyzerino
       private FileInfo fileInfo {get; set;}
       private ExcelPackage xlPackage {get; set;}
       private ExcelWorkbook xlWorkBook { get; set; }
-      public ExcelWorksheet XLTimeSheet { get; protected set; }
+      internal ExcelWorksheet XLTimeSheet { get; set; }
       public Dictionary<int, TimeSheetRow> allTimesheetRows { get; protected set; }
       
-      public ExcelWorksheet XLJobNumberKeySheet { get; protected set; }
+      internal ExcelWorksheet XLJobNumberKeySheet { get; set; }
       public Dictionary<int, JobNumberKeyRow> allJobNumberKeyRows { get; protected set; }
 
       public ExcelWorksheet XLInvoicing { get; protected set; }
