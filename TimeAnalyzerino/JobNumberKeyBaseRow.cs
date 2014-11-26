@@ -21,8 +21,8 @@ namespace TimeAnalyzerino
 
       public String JobNumber { get; internal set; }
       protected int jobNumberIntegerPart_;
-      public int JobNumberIntegerPart { get { return jobNumberIntegerPart_; } }
-      public String JobNumberDecimalPart { get; internal set; }
+      public int JobNumberInteger { get { return jobNumberIntegerPart_; } }
+      public String JobSubnumber { get; internal set; }
       public String Task { get; internal set; }
       public String Description { get; internal set; }
 
@@ -32,7 +32,7 @@ namespace TimeAnalyzerino
          var jobnum = this.JobNumber.Split('.');
          Int32.TryParse(this.JobNumber.Split('.').FirstOrDefault(), out jobNumberIntegerPart_);
          if (jobnum.Length > 1)
-            this.JobNumberDecimalPart = jobnum[1];
+            this.JobSubnumber = jobnum[1];
       }
 
 

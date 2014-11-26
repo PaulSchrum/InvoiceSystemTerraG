@@ -67,7 +67,7 @@ namespace UnitTestTimeAnalyzer
       public void TimeAnalyzer_TimesheetWorksheet_Row1144JobInteger_Is_1100()
       {
          TimeAnalyzerSetup();
-         int jobNumberIP = analyst.allTimesheetRows[1144].JobNumberIntegerPart;
+         int jobNumberIP = analyst.allTimesheetRows[1144].JobNumberInteger;
          Assert.AreEqual(
             expected: 1100,
             actual: jobNumberIP);
@@ -77,7 +77,7 @@ namespace UnitTestTimeAnalyzer
       public void TimeAnalyzer_TimesheetWorksheet_Row1144JobDecimal_Is_1()
       {
          TimeAnalyzerSetup();
-         String jobNumberDec = analyst.allTimesheetRows[1144].JobNumberDecimalPart;
+         String jobNumberDec = analyst.allTimesheetRows[1144].JobSubnumber;
          Assert.AreEqual(
             expected: "1",
             actual: jobNumberDec);
@@ -241,13 +241,13 @@ namespace UnitTestTimeAnalyzer
          TimeAnalyzerSetup();
          var numberOfInvoicableProjects =
             analyst.GetLastWorkedRowForEachBillableProjectNumber()
-            .Where(row => row.JobNumberIntegerPart == 1200)
+            .Where(row => row.JobNumberInteger == 1200)
             .Select(row => row)
             .FirstOrDefault()
             ;
 
          var Expected = new DateTime(2014, 8, 25);
-         Assert.AreEqual(expected: 1200, actual: numberOfInvoicableProjects.JobNumberIntegerPart);
+         Assert.AreEqual(expected: 1200, actual: numberOfInvoicableProjects.JobNumberInteger);
          Assert.AreEqual(
             expected: Expected,
             actual: numberOfInvoicableProjects.WorkDate);

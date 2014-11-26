@@ -74,7 +74,7 @@ namespace TimeAnalyzerino
       {
          return allTimesheetRows
             .Where(row => row.Value.WorkDate >= start && row.Value.WorkDate < end)
-            .GroupBy(row => row.Value.JobNumberIntegerPart)
+            .GroupBy(row => row.Value.JobNumberInteger)
             .OrderBy(grp => grp.Key)
             .ToDictionary(i => i.Key, i => i.ToList());
             ;
@@ -86,7 +86,7 @@ namespace TimeAnalyzerino
          return
             allTimesheetRows
             .Where(row => row.Value.WorkDate >= start && row.Value.WorkDate < end)
-            .Where(row => row.Value.JobNumberIntegerPart == jobInt)
+            .Where(row => row.Value.JobNumberInteger == jobInt)
             .Select(row => row.Value)
             ;
       }
@@ -95,7 +95,7 @@ namespace TimeAnalyzerino
       {
          return
             allJobNumberKeyRows
-            .Where(row => row.Value.JobNumberIntegerPart == jobNumber)
+            .Where(row => row.Value.JobNumberInteger == jobNumber)
             .Where(row => false == String.IsNullOrEmpty(row.Value.Invoiceable))
             .Select(row => row.Value)
             ;
@@ -137,7 +137,7 @@ namespace TimeAnalyzerino
          return
             this.allJobNumberKeyRows
             .Where(row => !(String.IsNullOrEmpty(row.Value.Invoiceable)))
-            .Select(row => row.Value.JobNumberIntegerPart)
+            .Select(row => row.Value.JobNumberInteger)
             .Distinct()
             ;
       }
@@ -151,7 +151,7 @@ namespace TimeAnalyzerino
                   if (projectNumber == 0)
                      return true;
                   else
-                     return row.Value.JobNumberIntegerPart == projectNumber;
+                     return row.Value.JobNumberInteger == projectNumber;
                }
                )
             .Where(row => !(String.IsNullOrEmpty(row.Value.Invoiceable)))
@@ -173,7 +173,7 @@ namespace TimeAnalyzerino
                , invoicableRow => invoicableRow
                , (tsh, inv) => tsh.Value
             )
-            .GroupBy(row => row.JobNumberIntegerPart)
+            .GroupBy(row => row.JobNumberInteger)
             ;
       }
 
@@ -194,8 +194,8 @@ namespace TimeAnalyzerino
             GetLastWorkedRowForEachBillableProjectNumber()
             .Where(
                row => allJobNumbersEverInvoiced
-                  .All(invJob => invJob != row.JobNumberIntegerPart))
-            .Select(row => row.JobNumberIntegerPart)
+                  .All(invJob => invJob != row.JobNumberInteger))
+            .Select(row => row.JobNumberInteger)
             ;
          return neverInvoiced;
       }
@@ -223,7 +223,7 @@ namespace TimeAnalyzerino
                GetMostRecentInvoiceForAllProjectsEverInvoiced()
                .All(invRow => row.WorkDate > invRow.EndDate)
                )
-            .Select(row => row.JobNumberIntegerPart)
+            .Select(row => row.JobNumberInteger)
             .Union(GetAllProjectNumbersWhichHaveNeverBeenInvoiced())
             //.ToList()
             ;
