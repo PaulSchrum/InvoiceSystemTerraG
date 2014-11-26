@@ -101,6 +101,23 @@ namespace TimeAnalyzerino
             ;
       }
 
+      public IEnumerable<TimeSheetRow> GetTimesheetAllRowsByInvoiceableJob
+         (int jobInt)
+      {
+         var billableJobs =
+            GetInvoiceableJobsByJobNumber(jobInt);
+
+         return
+            allTimesheetRows
+            .Where(row => row.Value.JobNumberInteger == jobInt)
+            .Select(row => row.Value)
+            .Join(billableJobs
+               , timeSheetRow => timeSheetRow.JobNumber
+               , billableJobRow => billableJobRow.JobNumber
+               , (tsh, billJ) => tsh
+            );
+      }
+
       public IEnumerable<TimeSheetRow> GetTimesheetRowsByInvoiceableJobOverDateRange
          (int jobInt, DateTime start, DateTime end)
       {
@@ -215,7 +232,17 @@ namespace TimeAnalyzerino
          return v;
       }
 
-      internal IEnumerable<int> GetAllProjectNumbersWhichMayNowBeInvoiced()
+      public InvoicingRow GetMostRecentInvoiceForProject(int jobNumber)
+      {
+         InvoicingRow v =
+            GetMostRecentInvoiceForAllProjectsEverInvoiced()
+            .Where(invRow => invRow.JobNumber == jobNumber)
+            .FirstOrDefault()
+            ;
+         return v;
+      }
+
+      public IEnumerable<int> GetAllProjectNumbersWhichMayNowBeInvoiced()
       {
          var monad =
             GetLastWorkedRowForEachBillableProjectNumber()
@@ -229,5 +256,25 @@ namespace TimeAnalyzerino
             ;
          return monad;
       }
+
+      public IEnumerable<TimeSheetRow> GetAllInvoicableRowsNotYetInvoiced(int jobNumber)
+      {
+         if (false ==
+            GetAllProjectNumbersWhichMayNowBeInvoiced().Contains(jobNumber))
+            return null;
+
+         if (true == GetAllProjectNumbersWhichHaveNeverBeenInvoiced().Contains(jobNumber))
+            return GetTimesheetAllRowsByInvoiceableJob(jobNumber);
+
+         var v =
+         //return 
+            GetTimesheetAllRowsByInvoiceableJob(jobNumber)
+            .Where(row =>
+               row.WorkDate > GetMostRecentInvoiceForProject(jobNumber).EndDate)
+            ;
+
+         return v;
+      }
+
    }
 }

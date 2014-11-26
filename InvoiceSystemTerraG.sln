@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeAnalyzerino", "TimeAnal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestTimeAnalyzer", "UnitTestTimeAnalyzer\UnitTestTimeAnalyzer.csproj", "{BE0C64FD-C65C-43E5-9531-3A15A71B3A3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicing", "Invvoicing\Invoicing.csproj", "{D1192BF3-F431-4E87-9708-2840810EDCFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BE0C64FD-C65C-43E5-9531-3A15A71B3A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE0C64FD-C65C-43E5-9531-3A15A71B3A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE0C64FD-C65C-43E5-9531-3A15A71B3A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

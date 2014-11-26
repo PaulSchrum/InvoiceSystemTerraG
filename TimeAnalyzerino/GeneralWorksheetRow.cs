@@ -11,6 +11,8 @@ namespace TimeAnalyzerino
 {
    public class GeneralWorksheetRow
    {
+      protected GeneralWorksheetRow() { }
+
       public GeneralWorksheetRow(ExcelWorksheet ws, int row)
       {
          RowInSheet = row;

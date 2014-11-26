@@ -26,6 +26,12 @@ namespace TimeAnalyzerino
          Comment = convertCellToString(ws.Cells[row, 9]);
       }
 
+      public InvoicingRow()
+      {
+         base.RowInSheet = -1;
+         
+      }
+
       public String InvoiceNumber {get; set;}
       public int JobNumber {get; set;}
       public DateTime StartDate {get; set;}

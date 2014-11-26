@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Invvoicing\Invoicing.csproj">
+      <Project>{d1192bf3-f431-4e87-9708-2840810edcfd}</Project>
+      <Name>Invoicing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TimeAnalyzerino\TimeAnalyzerino.csproj">
       <Project>{9a6ee576-ab4c-4930-8ff3-530995821aee}</Project>
       <Name>TimeAnalyzerino</Name>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TimeAnalyzerino;
+using Invoicing;
 
 namespace UnitTestTimeAnalyzer
 {
@@ -297,15 +298,101 @@ namespace UnitTestTimeAnalyzer
             actual: couldBeInvoiced.Count);
       }
 
+      [TestMethod]
+      public void TimeAnalyzer_GetAllTimesheetRows_For1200_Returns9()
+      {
+         TimeAnalyzerSetup();
+         var tsRowsFor1200 =
+            analyst.GetAllBillableTimeSheetRowsByProject()
+            .Where(grp => grp.Key == 1200)
+            .ToList();
+         Assert.IsNotNull(tsRowsFor1200);
+         Assert.AreEqual(
+            expected: 1,
+            actual: tsRowsFor1200.Count);
+         var values = tsRowsFor1200[0];
+         Assert.AreEqual(
+            expected: 9
+            , actual: values.ToList().Count);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetMostRecentInvoice_For21_ReturnsNull()
+      {
+         TimeAnalyzerSetup();
+         var mostRecentInvoiceFor21 =
+            analyst.GetMostRecentInvoiceForProject(21);
+         Assert.IsNull(mostRecentInvoiceFor21);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoiceableTSRow_For21_ReturnsCorrect()
+      {
+         TimeAnalyzerSetup();
+         var invoicableTSRowsFor21 =
+            analyst.GetTimesheetAllRowsByInvoiceableJob(21);
+         Assert.IsNotNull(invoicableTSRowsFor21);
+         Assert.IsTrue(invoicableTSRowsFor21.ToList().Count > 0);
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetMostRecentInvoice_For1200_Returns20140821()
+      {
+         TimeAnalyzerSetup();
+         var mostRecentInvoiceFor1200 =
+            analyst.GetMostRecentInvoiceForProject(1200);
+         Assert.IsNotNull(mostRecentInvoiceFor1200);
+         DateTime expected = new DateTime(2014, 8, 21);
+         Assert.AreEqual(
+            expected: expected,
+            actual: mostRecentInvoiceFor1200.EndDate
+            );
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoiceableTSrows_For21_Returns20140607Row()
+      {
+         TimeAnalyzerSetup();
+         var invoicableTSrowsFor21 =
+            analyst.GetAllInvoicableRowsNotYetInvoiced(21)
+            .LastOrDefault();
+         Assert.IsNotNull(invoicableTSrowsFor21);
+         DateTime expected = new DateTime(2014, 6, 7);
+         Assert.AreEqual(
+            expected: expected,
+            actual: invoicableTSrowsFor21.WorkDate
+            );
+      }
+
+      [TestMethod]
+      public void TimeAnalyzer_GetAllInvoiceableTSrows_For1100_ReturnsMoreThan2()
+      {
+         TimeAnalyzerSetup();
+         var invoicableTSrowsFor1100 =
+            analyst.GetAllInvoicableRowsNotYetInvoiced(1100)
+            .ToList();
+         Assert.IsNotNull(invoicableTSrowsFor1100);
+         Assert.IsTrue
+            ( invoicableTSrowsFor1100.Count > 2
+            );
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateForJob12863384_ReturnsNull()
+      {
+         TimeAnalyzerSetup();
+         var v = InvoiceSummary.Create(analyst, 12863384);
+         Assert.IsNull(v);
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateForJob1100_ReturnsNotNull()
+      {
+         TimeAnalyzerSetup();
+         var v = InvoiceSummary.Create(analyst, 1100);
+         Assert.IsNotNull(v);
+      }
 
 
-      // GetAllProjectNumbersWhichHaveNeverBeenInvoiced
-
-      //[TestMethod]  needed test, but not ready yet
-      //public void TimeAnalyzer_GetAllProjectNumbersWhichCouldBeInvoiced_ReturnsWhat()
-      //{
-      //   GetAllProjectNumbersWhichCouldBeInvoiced
-      //}
-
-   }  //
+   }
 }
