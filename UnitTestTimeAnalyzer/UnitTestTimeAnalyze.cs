@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TimeAnalyzerino;
 using Invoicing;
+using System.IO;
 
 namespace UnitTestTimeAnalyzer
 {
@@ -12,6 +13,10 @@ namespace UnitTestTimeAnalyzer
    {
       private String XLfilename = @"C:\SourceModules\InvoiceSystemTerraG\TestData\TestDataset.xlsm";
       private TSanalyst analyst = null;
+      private String invoiceDirectory =
+         @"C:\Users\Paul\Documents\Life\Business\Terragrammetry\Invoicing";
+      private String invoiceSeedXLfile = "Invoice Seed.xlsx";
+      private bool SeedRelatedTestingMayProceed { get; set; }
 
       [TestInitialize]
       public void TimeAnalyzerSetup()
@@ -25,6 +30,22 @@ namespace UnitTestTimeAnalyzer
          if (null != rm21Dev)
             rm21Dev.testing_changeInvoicableValueTo("y");
 
+         SeedRelatedTestingMayProceed =
+            isSeedFileAvailable();
+      }
+
+      private bool isSeedFileAvailable()
+      {
+         bool result = false;
+
+         if (Directory.Exists(this.invoiceDirectory) &&
+            File.Exists(this.invoiceDirectory + @"\" 
+               + this.invoiceSeedXLfile))
+         {
+            result = true;
+         }
+
+         return result;
       }
 
       [TestCleanup]
@@ -409,6 +430,7 @@ namespace UnitTestTimeAnalyzer
          TimeAnalyzerSetup();
          var invoice = InvoiceSummary.Create(analyst, 1100);
          Assert.IsNotNull(invoice);
+         invoice.TestingMode = true;
          invoice.IsIntermediate = true;
          Assert.AreEqual(
             expected: "LobbyGuard Solutions, LLC",
@@ -416,6 +438,25 @@ namespace UnitTestTimeAnalyzer
             );
       }
 
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_ReturnsCreatesFile()
+      {
+         TimeAnalyzerSetup();
+         SkipTestIfNeeded_SeedInvoiceFile();
+         var invoice = InvoiceSummary.Create(analyst, 1100);
+         
+      }
+
+      private void SkipTestIfNeeded_SeedInvoiceFile()
+      {
+         if (false == SeedRelatedTestingMayProceed)
+         {
+            Assert.Inconclusive(
+               "Unable to run tests related to file creation." + "\n"
+               + "A required directory or file does not exist."
+               );
+         }
+      }
 
    }
 }

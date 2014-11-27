@@ -16,6 +16,7 @@ namespace Invoicing
       public InvoicingRow InvoicingRow { get; protected set; }
       public CompaniesRow Addressee { get; protected set; }
       public bool IsIntermediate { get; set; }
+      public bool TestingMode { get; set; }
 
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
       {
@@ -55,6 +56,7 @@ namespace Invoicing
 
          return returnValue;
       }
+
 
 
    }
