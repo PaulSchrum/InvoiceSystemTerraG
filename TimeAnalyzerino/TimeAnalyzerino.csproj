@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompaniesRow.cs" />
     <Compile Include="GeneralWorksheetRow.cs" />
     <Compile Include="InvoicingRow.cs" />
     <Compile Include="JobNumberKeyBaseRow.cs" />

@@ -137,6 +137,16 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
+      public void TimeAnalyzer_CompaniesCollection_Has2EntriesFor2014()
+      {
+         TimeAnalyzerSetup();
+         var companies = analyst.allCompanies
+            .Where(row => row.Value.StartDate < new DateTime(2014, 12, 31))
+            .ToList();
+         Assert.AreEqual(expected: 2, actual: companies.Count);
+      }
+
+      [TestMethod]
       public void TimeAnalyzer_JobNumberKeyWorksheet_Row7_Has_Description_RM21()
       {
          TimeAnalyzerSetup();
@@ -389,8 +399,21 @@ namespace UnitTestTimeAnalyzer
       public void InvoiceSummary_CreateForJob1100_ReturnsNotNull()
       {
          TimeAnalyzerSetup();
-         var v = InvoiceSummary.Create(analyst, 1100);
-         Assert.IsNotNull(v);
+         var invoice = InvoiceSummary.Create(analyst, 1100);
+         Assert.IsNotNull(invoice);
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateForJob1100_ReturnsPayeeLobbyGuard()
+      {
+         TimeAnalyzerSetup();
+         var invoice = InvoiceSummary.Create(analyst, 1100);
+         Assert.IsNotNull(invoice);
+         invoice.IsIntermediate = true;
+         Assert.AreEqual(
+            expected: "LobbyGuard Solutions, LLC",
+            actual: invoice.Addressee.CompanyName
+            );
       }
 
 

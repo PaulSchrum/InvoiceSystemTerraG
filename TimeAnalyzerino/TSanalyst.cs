@@ -54,6 +54,14 @@ namespace TimeAnalyzerino
             .Select(row => row.Value.JobNumber)
             .Distinct()
             ;
+
+         XLCompanies = xlWorkBook.Worksheets["Companies"];
+         allCompanies = Enumerable.Range(2, XLCompanies.Dimension.End.Row)
+            .Where(row => true == CompaniesRow.HasData(XLCompanies, row))
+            .Select(row => new CompaniesRow(XLCompanies, row))
+            .ToDictionary(row => row.RowInSheet, row => row)
+            ;
+
       }
 
       private String xlPathAndName { get; set; }
@@ -69,6 +77,9 @@ namespace TimeAnalyzerino
       public ExcelWorksheet XLInvoicing { get; protected set; }
       public Dictionary<int, InvoicingRow> allInvoicingRows { get; protected set; }
       protected IEnumerable<int> allJobNumbersEverInvoiced { get; set; }
+
+      public ExcelWorksheet XLCompanies { get; protected set; }
+      public Dictionary<int, CompaniesRow> allCompanies { get; protected set; }
 
       public Dictionary<int, List<KeyValuePair<int,TimeSheetRow>>> GetJobsByDateRange(DateTime start, DateTime end)
       {

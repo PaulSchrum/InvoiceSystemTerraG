@@ -27,7 +27,6 @@ namespace Invoicing
           Task_ = _task;
           Description = description;
           HourlyRate = hourlyRate;
-          PayForThisDay = payForDay;
        }
 
        public JobNumberSummary(IGrouping<string, TimeSheetRow> tskGrp)
@@ -44,8 +43,7 @@ namespace Invoicing
 
           this.Task_ = frst.Task;
           this.Description = frst.Description;
-          this.HourlyRate = 40M;
-          this.PayForThisDay = this.HoursWorked * this.HourlyRate;
+          this.HourlyRate = 50M;
        }
 
        public int JobNumberInteger { get; protected set; }
@@ -55,7 +53,7 @@ namespace Invoicing
        public String Task_ { get; protected set; }  // not currently used in invoicing
        public String Description { get; protected set; }
        public Decimal HourlyRate { get; protected set; }
-       public Decimal PayForThisDay { get; protected set; }
+       public Decimal PayForThisDay { get { return this.HoursWorked * this.HourlyRate; } }
 
       internal static List<JobNumberSummary> CreateList(IEnumerable<IGrouping<string,TimeSheetRow>> timeSheetRows)
       {

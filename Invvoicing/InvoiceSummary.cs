@@ -14,6 +14,8 @@ namespace Invoicing
 
       public List<InvoiceDay> InvoiceDays { get; protected set; }
       public InvoicingRow InvoicingRow { get; protected set; }
+      public CompaniesRow Addressee { get; protected set; }
+      public bool IsIntermediate { get; set; }
 
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
       {
@@ -43,8 +45,17 @@ namespace Invoicing
          returnValue.InvoicingRow.BilledAmount = 
             (Double) InvoiceDays.Sum(jobSummary => jobSummary.Pay);
 
+         returnValue.Addressee = analyst.allCompanies
+            .Where(row => row.Value.JobNumber == jobNumber)
+            .OrderBy(row => row.Value.StartDate)
+            .FirstOrDefault().Value
+            ;
+
+         returnValue.IsIntermediate = false;
+
          return returnValue;
       }
+
 
    }
 }
