@@ -438,6 +438,17 @@ namespace UnitTestTimeAnalyzer
             );
       }
 
+      private void SkipTestIfNeeded_SeedInvoiceFile()
+      {
+         if (false == SeedRelatedTestingMayProceed)
+         {
+            Assert.Inconclusive(
+               "Unable to run tests related to file creation." + "\n"
+               + "A required directory or file does not exist."
+               );
+         }
+      }
+
       [TestMethod]
       public void InvoiceSummary_CreateXLFileForJob1100_ReturnsCreateSuccessful()
       {
@@ -459,14 +470,25 @@ namespace UnitTestTimeAnalyzer
             );
       }
 
-      private void SkipTestIfNeeded_SeedInvoiceFile()
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_FileExists()
       {
-         if (false == SeedRelatedTestingMayProceed)
+         TimeAnalyzerSetup();
+         SkipTestIfNeeded_SeedInvoiceFile();
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         try
          {
-            Assert.Inconclusive(
-               "Unable to run tests related to file creation." + "\n"
-               + "A required directory or file does not exist."
+            newInvoice.SaveAsNewExcelFile
+               (invoiceSeedXLfile
+               , invoiceDirectory
                );
+            Assert.IsTrue(
+               File.Exists(newInvoice.FullFileName)
+               );
+         }
+         finally
+         {
+            newInvoice.deleteInvoiceXLfile_forTestingCleanup();
          }
       }
 

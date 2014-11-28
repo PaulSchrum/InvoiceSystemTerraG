@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OfficeOpenXml;
 using TimeAnalyzerino;
 
 namespace Invoicing
@@ -66,5 +67,15 @@ namespace Invoicing
 
          return returnList;
       }
-   }
+
+      internal void WriteRow(ExcelWorksheet XLTimeSheet, int row)
+      {
+         XLTimeSheet.Cells[row, 1].Value = this.Date_;
+         XLTimeSheet.Cells[row, 2].Value = this.JobNumberInteger + "." + this.JobSubnumber;
+         XLTimeSheet.Cells[row, 3].Value = this.Description;
+         XLTimeSheet.Cells[row, 4].Value = this.HoursWorked;
+         XLTimeSheet.Cells[row, 5].Value = this.HourlyRate;
+         XLTimeSheet.Cells[row, 6].Value = this.PayForThisDay;
+      }
+    }
 }

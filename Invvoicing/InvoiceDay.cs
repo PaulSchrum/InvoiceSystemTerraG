@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OfficeOpenXml;
 using TimeAnalyzerino;
 
 namespace Invoicing
@@ -40,6 +41,18 @@ namespace Invoicing
          }
 
          return returnList.OrderBy(row => row.Date_).ToList();
+      }
+
+      internal void WriteToExcelWorksheet(ExcelWorksheet XLTimeSheet, ref int row)
+      {
+         foreach(var jobNumbers in this.JobNumberSummaries)
+         {
+            jobNumbers.WriteRow(XLTimeSheet, row);
+            row++;
+            XLTimeSheet.InsertRow(row, 1, row);
+         }
+         XLTimeSheet.InsertRow(row, 1, row);
+         row++;
       }
    }
 }

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using OfficeOpenXml;
 using TimeAnalyzerino;
 
 
+[assembly: InternalsVisibleTo("UnitTestTimeAnalyzer")]
 namespace Invoicing
 {
    public class InvoiceSummary
@@ -19,8 +23,14 @@ namespace Invoicing
       public int OrderNumber { get; protected set; }
       protected TSanalyst analyst { get; set; }
       public String FileName { get; protected set; }
+      public String FullFileName { get; protected set; }
       public bool IsIntermediate { get; set; }
       public bool TestingMode { get; set; }
+      private ExcelPackage xlPackage {get; set;}
+      private ExcelWorkbook xlWorkBook { get; set; }
+      private ExcelWorksheet XLTimeSheet { get; set; }
+
+      protected String FirstWordOfCompanyName;
 
       private void generateFileName()
       {
@@ -31,13 +41,91 @@ namespace Invoicing
             .LastOrDefault();
 
          this.OrderNumber = mostRecentInvoice.InvoiceOrderNumber + 1;
-         String FirstWordOfCompanyName;
          try { FirstWordOfCompanyName = this.Addressee.CompanyName.Split(' ')[0] + " "; }
          catch (Exception e) { FirstWordOfCompanyName = "Unnamed "; }
-         this.FileName = 
-            FirstWordOfCompanyName + " " + 
+         this.setFileName();
+      }
+
+      private void setFileName()
+      {
+         this.FileName =
+            FirstWordOfCompanyName +
             JobNumber + "." +
             OrderNumber.ToString("D4") + ".xlsx";
+      }
+
+      public void SaveAsNewExcelFile(String seedFileNameOnly, String workingPath)
+      {
+         String seedFile = workingPath + @"\" + seedFileNameOnly;
+         FullFileName = workingPath + @"\" + this.FileName;
+         bool successfulWrite = false;
+         while(!successfulWrite)
+         {
+            if(File.Exists(FullFileName))
+            {
+               this.incrementOrderNumber();
+               FullFileName = workingPath + @"\" + this.FileName;
+            }
+            else
+            {
+               File.Copy(seedFile, FullFileName);
+               successfulWrite = true;
+            }
+         }
+
+         xlPackage = xlPackage = new ExcelPackage(new FileInfo(this.FullFileName));
+         xlWorkBook = xlPackage.Workbook;
+         XLTimeSheet = xlWorkBook.Worksheets["Service Invoice"];
+         XLTimeSheet.Cells["B7"].Value = this.Addressee.ContactPerson;
+         XLTimeSheet.Cells["B8"].Value = this.Addressee.CompanyName;
+         XLTimeSheet.Cells["B9"].Value = this.Addressee.Address1;
+         XLTimeSheet.Cells["B10"].Value = this.Addressee.Address2;
+         XLTimeSheet.Cells["B11"].Value = this.Addressee.CityStateZip;
+         XLTimeSheet.Cells["E8"].Value = this.getInvoiceStartDate();
+         XLTimeSheet.Cells["F8"].Value = this.getInvoiceEndDate();
+         XLTimeSheet.Cells["E11"].Value = DateTime.Today;
+         XLTimeSheet.Cells["F11"].Value = DateTime.Today.AddDays(17.0);
+         XLTimeSheet.Cells["B11"].Value = this.Addressee.CityStateZip;
+         XLTimeSheet.Cells["F4"].Value = 
+            this.JobNumber.ToString() + "." + this.OrderNumber.ToString("D4");
+         XLTimeSheet.Cells["F5"].Value = this.Addressee.JobNumber.ToString();
+
+         if (this.IsIntermediate)
+            XLTimeSheet.Cells["E3"].Value = "Intermediate Invoice";
+
+         int nextDataRow = 14;
+         foreach(var day in this.InvoiceDays)
+         {
+            day.WriteToExcelWorksheet(XLTimeSheet, ref nextDataRow);
+         }
+
+         xlPackage.Save();
+      }
+
+      private DateTime getInvoiceStartDate()
+      {
+         return this.InvoiceDays
+            .OrderBy(day => day.Date_)
+            .FirstOrDefault().Date_;
+      }
+
+      private DateTime getInvoiceEndDate()
+      {
+         return this.InvoiceDays
+            .OrderBy(day => day.Date_)
+            .LastOrDefault().Date_;
+      }
+
+      private void incrementOrderNumber()
+      {
+         this.OrderNumber++;
+         this.setFileName();
+      }
+
+      internal void deleteInvoiceXLfile_forTestingCleanup()
+      {
+         if (File.Exists(this.FullFileName))
+            File.Delete(this.FullFileName);
       }
 
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
