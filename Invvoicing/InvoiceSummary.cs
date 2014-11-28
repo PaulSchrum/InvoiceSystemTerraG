@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeAnalyzerino;
-//using Invoicing;
+
 
 namespace Invoicing
 {
@@ -15,8 +15,30 @@ namespace Invoicing
       public List<InvoiceDay> InvoiceDays { get; protected set; }
       public InvoicingRow InvoicingRow { get; protected set; }
       public CompaniesRow Addressee { get; protected set; }
+      public int JobNumber { get; protected set; }
+      public int OrderNumber { get; protected set; }
+      protected TSanalyst analyst { get; set; }
+      public String FileName { get; protected set; }
       public bool IsIntermediate { get; set; }
       public bool TestingMode { get; set; }
+
+      private void generateFileName()
+      {
+         var mostRecentInvoice = this.analyst.allInvoicingRows
+            .Where(row => row.Value.JobNumber == this.JobNumber)
+            .Select(row => row.Value)
+            .OrderBy(row => row.InvoiceOrderNumber)
+            .LastOrDefault();
+
+         this.OrderNumber = mostRecentInvoice.InvoiceOrderNumber + 1;
+         String FirstWordOfCompanyName;
+         try { FirstWordOfCompanyName = this.Addressee.CompanyName.Split(' ')[0] + " "; }
+         catch (Exception e) { FirstWordOfCompanyName = "Unnamed "; }
+         this.FileName = 
+            FirstWordOfCompanyName + " " + 
+            JobNumber + "." +
+            OrderNumber.ToString("D4") + ".xlsx";
+      }
 
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
       {
@@ -52,12 +74,13 @@ namespace Invoicing
             .FirstOrDefault().Value
             ;
 
+         returnValue.JobNumber = jobNumber;
+         returnValue.analyst = analyst;
          returnValue.IsIntermediate = false;
+         returnValue.generateFileName();
 
          return returnValue;
       }
-
-
 
    }
 }

@@ -14,7 +14,7 @@ namespace UnitTestTimeAnalyzer
       private String XLfilename = @"C:\SourceModules\InvoiceSystemTerraG\TestData\TestDataset.xlsm";
       private TSanalyst analyst = null;
       private String invoiceDirectory =
-         @"C:\Users\Paul\Documents\Life\Business\Terragrammetry\Invoicing";
+         @"C:\SourceModules\InvoiceSystemTerraG\TestData\Invoicing";
       private String invoiceSeedXLfile = "Invoice Seed.xlsx";
       private bool SeedRelatedTestingMayProceed { get; set; }
 
@@ -39,7 +39,7 @@ namespace UnitTestTimeAnalyzer
          bool result = false;
 
          if (Directory.Exists(this.invoiceDirectory) &&
-            File.Exists(this.invoiceDirectory + @"\" 
+            File.Exists(this.invoiceDirectory + @"\"
                + this.invoiceSeedXLfile))
          {
             result = true;
@@ -62,7 +62,7 @@ namespace UnitTestTimeAnalyzer
 
       [TestMethod]
       public void TimeAnalyzer_Create_OpensXLFileAndReadsTimesheetWorksheet()
-     { 
+      {
          TimeAnalyzerSetup();
          Assert.IsNotNull(analyst.XLTimeSheet);
       }
@@ -307,9 +307,9 @@ namespace UnitTestTimeAnalyzer
 
          var value = mostRecentInvoiceForEveryProjectEverInvoiced;
          bool success =
-            (  value.Count == 2)
+            (value.Count == 2)
             && value[0].JobNumber == 1100
-            && value[0].DateSent == new DateTime(2014,11,14)
+            && value[0].DateSent == new DateTime(2014, 11, 14)
             && value[1].JobNumber == 1200
             && value[1].DateSent == new DateTime(2014, 8, 25)
             ;
@@ -404,7 +404,7 @@ namespace UnitTestTimeAnalyzer
             .ToList();
          Assert.IsNotNull(invoicableTSrowsFor1100);
          Assert.IsTrue
-            ( invoicableTSrowsFor1100.Count > 2
+            (invoicableTSrowsFor1100.Count > 2
             );
       }
 
@@ -439,12 +439,24 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
-      public void InvoiceSummary_CreateXLFileForJob1100_ReturnsCreatesFile()
+      public void InvoiceSummary_CreateXLFileForJob1100_ReturnsCreateSuccessful()
       {
          TimeAnalyzerSetup();
          SkipTestIfNeeded_SeedInvoiceFile();
-         var invoice = InvoiceSummary.Create(analyst, 1100);
-         
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         Assert.IsNotNull(newInvoice);
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_FileNameIsCorrect()
+      {
+         TimeAnalyzerSetup();
+         SkipTestIfNeeded_SeedInvoiceFile();
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         Assert.AreEqual(
+            expected: "LobbyGuard 1100.0003.xlsx",
+            actual: newInvoice.FileName
+            );
       }
 
       private void SkipTestIfNeeded_SeedInvoiceFile()

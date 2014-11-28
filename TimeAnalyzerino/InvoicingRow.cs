@@ -24,6 +24,7 @@ namespace TimeAnalyzerino
          AmountPayed = convertCellToDouble(ws.Cells[row, 10]);
          DatePaymentDeposited = convertCellToDateTime(ws.Cells[row, 9]);
          Comment = convertCellToString(ws.Cells[row, 9]);
+         InvoiceOrderNumber = determineInvoiceOrderNumber();
       }
 
       public InvoicingRow()
@@ -44,7 +45,17 @@ namespace TimeAnalyzerino
       public Double AmountPayed {get; set;}
       public DateTime DatePaymentDeposited {get; set;}
       public String Comment { get; set; }
+      public int InvoiceOrderNumber { get; set; }
 
+      private int determineInvoiceOrderNumber()
+      {
+         var strs = InvoiceNumber.Split('.');
+         if(strs.Length > 1)
+         {
+            return Convert.ToInt32(strs[1]);
+         }
+         return 0;
+      }
 
    }
 }
