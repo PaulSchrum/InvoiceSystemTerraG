@@ -50,6 +50,7 @@
     <Compile Include="TimeSheetRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TSanalyst.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
