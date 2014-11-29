@@ -492,5 +492,87 @@ namespace UnitTestTimeAnalyzer
          }
       }
 
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_Has7Days()
+      {
+         TimeAnalyzerSetup();
+         SkipTestIfNeeded_SeedInvoiceFile();
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         var v = newInvoice.InvoiceDays;
+         Assert.AreEqual(
+            expected: 7,
+            actual: v.Count
+            );
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_Nov14Has1SubTask()
+      {
+         TimeAnalyzerSetup();
+         SkipTestIfNeeded_SeedInvoiceFile();
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         var v = newInvoice.InvoiceDays
+            .Where(row => row.Date_ == new DateTime(2014, 11, 14))
+            .First();
+         Assert.AreEqual(
+            expected: 1,
+            actual: v.JobNumberSummaries.Count
+            );
+      }
+
+      [TestMethod]
+      public void ExcelTestingExtensions_EmptyCell_IsEmpty()
+      {
+         TimeAnalyzerSetup();
+         XLfilename.AssertCellIsEmpty("Timesheet", 14, 9);
+      }
+
+      [TestMethod]
+      public void ExcelTestingExtensions_NonemptyCell_IsNotEmpty()
+      {
+         TimeAnalyzerSetup();
+         XLfilename.AssertCellIsNotEmpty("Timesheet", 13, 9);
+      }
+
+      [TestMethod]
+      public void ExcelTestingExtensions_CertainCell_HasCorrectStringValue()
+      {
+         TimeAnalyzerSetup();
+         XLfilename.AssertCellHasValue("Timesheet", 13, 9,
+            "Software Development");
+      }
+
+      [TestMethod]
+      public void ExcelTestingExtensions_CertainCell_HasIncorrectStringValue_ThrowsCorrectException()
+      {
+         TimeAnalyzerSetup();
+         try
+         {
+            XLfilename.AssertCellHasValue("Timesheet", 13, 9,
+               "Business Development");
+         }
+         catch (Exception e)
+         {
+            if (!(e.Message.Contains(") does not match Actual (")))
+               throw e;
+         }
+      }
+
+      [TestMethod]
+      public void ExcelTestingExtensions_CertainCell_EmptyCell_ThrowsCorrectException()
+      {
+         TimeAnalyzerSetup();
+         try
+         {
+            XLfilename.AssertCellHasValue("Timesheet", 14, 9,
+               "Software Development");
+         }
+         catch(Exception e)
+         {
+            if (!(e.Message.Contains("Cell is empty although it")))
+               throw e;
+         }
+      }
+
    }
 }
