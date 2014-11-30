@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+
 using OfficeOpenXml;
 using TimeAnalyzerino;
 
@@ -93,13 +95,45 @@ namespace Invoicing
          if (this.IsIntermediate)
             XLTimeSheet.Cells["E3"].Value = "Intermediate Invoice";
 
-         int nextDataRow = 14;
+         int startDataRow = 14;
+         int nextDataRow = startDataRow;
          foreach(var day in this.InvoiceDays)
          {
             day.WriteToExcelWorksheet(XLTimeSheet, ref nextDataRow);
          }
 
+         foreach(int row in Enumerable.Range(startDataRow, nextDataRow - startDataRow + 2))
+         {
+            if(row % 2 == 0)
+            {
+              XLTimeSheet.ForTableRow(row, 1, 5,
+                  cell => cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White)
+                  );
+            }
+            else
+            {
+               XLTimeSheet.ForTableRow(row, 1, 5,
+                  cell => cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.WhiteSmoke)
+                  );
+            }
+         }
+
+         XLTimeSheet.DeleteRow(nextDataRow - 1, 2);
+
          xlPackage.Save();
+
+         var rowToWriteTo = analyst.allInvoicingRows.Count + 3;
+         analyst.WriteToNextAvailableRow(
+            new InvoicingRow
+               ( this.JobNumber
+               , this.OrderNumber
+               , this.getInvoiceStartDate()
+               , this.getInvoiceEndDate()
+               , TimeSpan.FromHours(this.getBillableHours())
+               , this.getHourlyRate()
+               , this.getBilledAmount()
+               )
+            );
       }
 
       private DateTime getInvoiceStartDate()
@@ -114,6 +148,27 @@ namespace Invoicing
          return this.InvoiceDays
             .OrderBy(day => day.Date_)
             .LastOrDefault().Date_;
+      }
+
+      private Double getBillableHours()
+      {
+         return (Double) this.InvoiceDays
+            .Sum(day => 
+               day.JobNumberSummaries
+                  .Sum(jobForDay => 
+                     jobForDay.HoursWorked))
+            ;
+      }
+
+      private Double getHourlyRate()
+      {
+         return
+            (Double)this.InvoiceDays.First().JobNumberSummaries.First().HourlyRate;
+      }
+
+      private Double getBilledAmount()
+      {
+         return getBillableHours() * getHourlyRate();
       }
 
       private void incrementOrderNumber()
