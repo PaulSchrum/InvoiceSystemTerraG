@@ -12,6 +12,7 @@ namespace UnitTestTimeAnalyzer
    public class UnitTestTimeAnalyze
    {
       private String XLfilename = @"C:\SourceModules\InvoiceSystemTerraG\TestData\TestDataset.xlsm";
+      private String XLfilenameBackup = @"C:\SourceModules\InvoiceSystemTerraG\TestData\TestDataset - Copy.xlsm";
       private TSanalyst analyst = null;
       private String invoiceDirectory =
          @"C:\SourceModules\InvoiceSystemTerraG\TestData\Invoicing";
@@ -489,6 +490,7 @@ namespace UnitTestTimeAnalyzer
          finally
          {
             newInvoice.deleteInvoiceXLfile_forTestingCleanup();
+            File.Copy(XLfilenameBackup, XLfilename, true);
          }
       }
 

@@ -72,10 +72,24 @@ namespace Invoicing
       {
          XLTimeSheet.Cells[row, 1].Value = this.Date_;
          XLTimeSheet.Cells[row, 2].Value = this.JobNumberInteger + "." + this.JobSubnumber;
-         XLTimeSheet.Cells[row, 3].Value = this.Description;
-         XLTimeSheet.Cells[row, 4].Value = this.HoursWorked;
+         XLTimeSheet.Cells[row, 3].Value = StripColonsAndAdjustText(this.Description);
+         XLTimeSheet.Cells[row, 4].Value = this.HoursWorked / 24M;
          XLTimeSheet.Cells[row, 5].Value = this.HourlyRate;
          XLTimeSheet.Cells[row, 6].Value = this.PayForThisDay;
+         XLTimeSheet.Row(row).Height = 15;
+      }
+
+      protected String StripColonsAndAdjustText(String txt)
+      {
+         txt = txt.Split(':').LastOrDefault().TrimStart();
+
+         int maxLength = 30;
+         if(txt.Length > maxLength)
+         {
+            txt = txt.Substring(0, maxLength - 1);
+            txt = txt + '…';
+         }
+         return txt;
       }
     }
 }

@@ -33,6 +33,28 @@ namespace TimeAnalyzerino
          
       }
 
+      public InvoicingRow
+         ( int jobNumber
+         , int invoiceOrderNumber
+         , DateTime startDate
+         , DateTime endDate
+         , TimeSpan billableHours
+         , Double hourlyRate
+         , Double billedAmount
+         )
+         : base()
+      {
+         JobNumber = jobNumber;
+         StartDate = startDate;
+         EndDate = endDate;
+         BillableHours = billableHours;
+         HourlyRate = hourlyRate;
+         BilledAmount = billedAmount;
+         InvoiceOrderNumber = invoiceOrderNumber;
+         InvoiceNumber = jobNumber.ToString() + "." +
+            InvoiceOrderNumber.ToString("D4");
+      }
+
       public String InvoiceNumber {get; set;}
       public int JobNumber {get; set;}
       public DateTime StartDate {get; set;}
@@ -46,6 +68,21 @@ namespace TimeAnalyzerino
       public DateTime DatePaymentDeposited {get; set;}
       public String Comment { get; set; }
       public int InvoiceOrderNumber { get; set; }
+
+      public override void WriteToRow(ExcelWorksheet ws, int row)
+      {
+         if (Util.AreAnyNull(ws))
+            return;
+         if (row < 1)
+            return;
+         ws.Cells[row, 1].Value = this.InvoiceNumber;
+         ws.Cells[row, 2].Value = this.JobNumber;
+         ws.Cells[row, 3].Value = this.StartDate;
+         ws.Cells[row, 4].Value = this.EndDate;
+         ws.Cells[row, 5].Value = this.BillableHours;
+         ws.Cells[row, 6].Value = this.HourlyRate;
+         ws.Cells[row, 7].Value = this.BilledAmount;
+      }
 
       private int determineInvoiceOrderNumber()
       {

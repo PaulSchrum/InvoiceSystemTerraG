@@ -113,6 +113,9 @@ namespace TimeAnalyzerino
          return (cell.Value as Double?).Value;
       }
 
+      public virtual void WriteToRow(ExcelWorksheet ws, int row)
+      { }
+
       internal bool CanAccessInternal()
       { return true; }
 

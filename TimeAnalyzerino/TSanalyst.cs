@@ -66,7 +66,7 @@ namespace TimeAnalyzerino
 
       private String xlPathAndName { get; set; }
       private FileInfo fileInfo {get; set;}
-      private ExcelPackage xlPackage {get; set;}
+      internal ExcelPackage xlPackage {get; private set;}
       private ExcelWorkbook xlWorkBook { get; set; }
       internal ExcelWorksheet XLTimeSheet { get; set; }
       public Dictionary<int, TimeSheetRow> allTimesheetRows { get; protected set; }
@@ -287,5 +287,23 @@ namespace TimeAnalyzerino
          return v;
       }
 
+      public void WriteToNextAvailableRow(GeneralWorksheetRow row)
+      {
+         int rowNumberToWriteTo = -1;
+         if(row is InvoicingRow)
+         {
+            rowNumberToWriteTo = this.XLInvoicing.Dimension.End.Row;
+            while (false == InvoicingRow.HasData(this.XLInvoicing, rowNumberToWriteTo))
+            {
+               rowNumberToWriteTo--;
+               if(rowNumberToWriteTo < 1)
+                  break;
+            }
+            rowNumberToWriteTo++;
+            row.WriteToRow(this.XLInvoicing, rowNumberToWriteTo);
+            this.xlPackage.Save();
+         }
+
+      }
    }
 }
