@@ -185,10 +185,15 @@ namespace Invoicing
 
       public static InvoiceSummary Create(TSanalyst analyst, int jobNumber)
       {
+         return Create(analyst, jobNumber, DateTime.Now);
+      }
+
+      public static InvoiceSummary Create(TSanalyst analyst, int jobNumber, DateTime endDate)
+      {
          var allInvoiceableRows =
             analyst.GetAllInvoicableRowsNotYetInvoiced(jobNumber);
 
-         var InvoiceDays = InvoiceDay.CreateList(allInvoiceableRows);
+         var InvoiceDays = InvoiceDay.CreateList(allInvoiceableRows, endDate);
 
          if (null == InvoiceDays || InvoiceDays.Count == 0) 
             return null;

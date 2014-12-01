@@ -472,6 +472,29 @@ namespace UnitTestTimeAnalyzer
       }
 
       [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_Returns7Days()
+      {
+         TimeAnalyzerSetup();
+         var newInvoice = InvoiceSummary.Create(analyst, 1100);
+         Assert.AreEqual(
+            expected: 7,
+            actual: newInvoice.InvoiceDays.Count
+            );
+      }
+
+      [TestMethod]
+      public void InvoiceSummary_CreateXLFileForJob1100_EndDateNov24_2014_Returns5Days()
+      {
+         TimeAnalyzerSetup();
+         var newInvoice = InvoiceSummary.Create
+            (analyst, 1100, new DateTime(2014, 11, 24));
+         Assert.AreEqual(
+            expected: 5,
+            actual: newInvoice.InvoiceDays.Count
+            );
+      }
+
+      [TestMethod]
       public void InvoiceSummary_CreateXLFileForJob1100_FileExists()
       {
          TimeAnalyzerSetup();

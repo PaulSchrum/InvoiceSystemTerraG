@@ -21,12 +21,15 @@ namespace Invoicing
       public List<JobNumberSummary> JobNumberSummaries { get; protected set; }
 
       internal static List<InvoiceDay> CreateList(
-         IEnumerable<TimeSheetRow> allInvoiceableRows)
+         IEnumerable<TimeSheetRow> allInvoiceableRows
+         , DateTime endDate
+         )
       {
          if (null == allInvoiceableRows) return null;
          List<InvoiceDay> returnList = new List<InvoiceDay>();
 
          var tsRowsGroupedByDate = allInvoiceableRows
+            .Where(row => row.WorkDate <= endDate)
             .GroupBy(row => row.WorkDate)
             .OrderBy(grp => grp.Key)
             ;
