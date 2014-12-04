@@ -58,7 +58,12 @@ namespace Invoicing
 
       public void SaveAsNewExcelFile(String seedFileNameOnly, String workingPath)
       {
-         String seedFile = workingPath + @"\" + seedFileNameOnly;
+         String seedFile;
+         if (seedFileNameOnly.Contains("\\"))
+            seedFile = seedFileNameOnly;
+         else
+            seedFile = workingPath + @"\" + seedFileNameOnly;
+
          FullFileName = workingPath + @"\" + this.FileName;
          bool successfulWrite = false;
          while(!successfulWrite)

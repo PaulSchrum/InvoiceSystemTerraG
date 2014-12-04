@@ -1,0 +1,15 @@
+﻿<Window x:Class="TerragrammetryInvoiceingSystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Terragrammetry Invoice Generator" Height="230" Width="600">
+    <StackPanel>
+        <Label Target="{Binding ElementName=TimesheetName}" Content="Timesheet Name:"></Label>
+        <TextBox x:Name="TimesheetName"/>
+        <Label Target="{Binding ElementName=DestinationFolder}" Content="Destination Folder:"></Label>
+        <TextBox x:Name="DestinationFolder"></TextBox>
+        <Label Target="{Binding ElementName=cmb_invoiceableProjects}" Content="Invoicable Projects:"></Label>
+        <ComboBox x:Name="cmb_invoiceableProjects" IsReadOnly="True"></ComboBox>
+        <Button x:Name="btn_generateInvoice" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,12,4,0" Height="28" Padding="10,4" Click="btn_generateInvoice_Click">Generate Invoice</Button>
+
+    </StackPanel>
+</Window>

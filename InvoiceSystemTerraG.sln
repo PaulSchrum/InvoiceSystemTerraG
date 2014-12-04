@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestTimeAnalyzer", "Uni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicing", "Invvoicing\Invoicing.csproj", "{D1192BF3-F431-4E87-9708-2840810EDCFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerragrammetryInvoiceingSystem", "TerragrammetryInvoiceingSystem\TerragrammetryInvoiceingSystem.csproj", "{205A689C-2C7E-4782-A427-5B80181D2190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1192BF3-F431-4E87-9708-2840810EDCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{205A689C-2C7E-4782-A427-5B80181D2190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{205A689C-2C7E-4782-A427-5B80181D2190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{205A689C-2C7E-4782-A427-5B80181D2190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{205A689C-2C7E-4782-A427-5B80181D2190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
