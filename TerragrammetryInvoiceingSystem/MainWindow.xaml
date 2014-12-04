@@ -9,7 +9,13 @@
         <TextBox x:Name="DestinationFolder"></TextBox>
         <Label Target="{Binding ElementName=cmb_invoiceableProjects}" Content="Invoicable Projects:"></Label>
         <ComboBox x:Name="cmb_invoiceableProjects" IsReadOnly="True"></ComboBox>
-        <Button x:Name="btn_generateInvoice" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,12,4,0" Height="28" Padding="10,4" Click="btn_generateInvoice_Click">Generate Invoice</Button>
+        <StackPanel Orientation="Horizontal">
+            <Label Target="{Binding ElementName=chk_IntermediateInvoice}" Content="Intermediate Invoice" VerticalContentAlignment="Center" Padding="5,5,6,5"></Label>
+            <CheckBox x:Name="chk_IntermediateInvoice" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,24,0"></CheckBox>
+            <Label Target="{Binding ElementName=txt_EndDate}" Content="End Date:" VerticalContentAlignment="Center" Padding="5,5,6,5"></Label>
+            <TextBox x:Name="txt_EndDate" Text="{Binding PropertyPath, StringFormat=d}" Width="124" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,24,0" MinWidth="124" MinHeight="20" MaxWidth="124" MaxHeight="20" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+            <Button x:Name="btn_generateInvoice" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,12,4,0" Height="28" Padding="10,4" Click="btn_generateInvoice_Click">Generate Invoice</Button>
+        </StackPanel>
 
     </StackPanel>
 </Window>

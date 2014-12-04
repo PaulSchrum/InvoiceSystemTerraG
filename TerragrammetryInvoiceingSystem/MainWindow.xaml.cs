@@ -60,7 +60,15 @@ namespace TerragrammetryInvoiceingSystem
       private void btn_generateInvoice_Click(object sender, RoutedEventArgs e)
       {
          int job = Convert.ToInt32(this.cmb_invoiceableProjects.SelectedItem);
-         this.invoiceSummary = InvoiceSummary.Create(analyst, job);
+         if(this.txt_EndDate.Text.Length > 0)
+            this.invoiceSummary = InvoiceSummary.Create(analyst, job, DateTime.Parse(this.txt_EndDate.Text));
+         else
+            this.invoiceSummary = InvoiceSummary.Create(analyst, job);
+
+         if(this.invoiceSummary == null)
+            this.invoiceSummary = InvoiceSummary.Create(analyst, job);
+
+         this.invoiceSummary.IsIntermediate = (bool) this.chk_IntermediateInvoice.IsChecked;
          this.invoiceSummary.SaveAsNewExcelFile
             (seedFileFullName, this.DestinationFolder.Text);
          setComboBoxValues();
